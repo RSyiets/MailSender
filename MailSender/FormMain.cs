@@ -1,0 +1,219 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace MailSender
+{
+    public partial class FormMain : Form
+    {
+        private readonly string logfile = "log.txt";
+        private readonly object countLock = new();
+        private int count;
+        private int total;
+
+
+        public FormMain()
+        {
+            InitializeComponent();
+            Logger.Init(logfile);
+            textBoxName.Text = MailConfig.Name;
+            textBoxFrom.Text = MailConfig.From;
+            toolStripStatusLabel.Text = "";
+        }
+
+        private void ButtonBrowseTemplate_Click(object sender, EventArgs e)
+        {
+            var result = openFileDialogTemplate.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                textBoxTemplate.Text = openFileDialogTemplate.FileName;
+            }
+        }
+
+        private void ButtonBrowseCSV_Click(object sender, EventArgs e)
+        {
+            var result = openFileDialogCSV.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                textBoxCSV.Text = openFileDialogCSV.FileName;
+            }
+        }
+
+        private void buttonConfig_Click(object sender, EventArgs e)
+        {
+            FormConfig.Open();
+            textBoxName.Text = MailConfig.Name;
+            textBoxFrom.Text = MailConfig.From;
+        }
+
+        private void ButtonSend_Click(object sender, EventArgs e)
+        {
+            if (textBoxTemplate.Text == "")
+            {
+                MessageBox.Show(Message.PleaseSpecifyTemplateFile);
+                return;
+            }
+            if (textBoxCSV.Text == "")
+            {
+                MessageBox.Show(Message.PleaseSpecifyCSVFile);
+                return;
+            }
+
+            // ファイル読み込み
+            var template = ReadTemplate();
+            if (template == null)
+            {
+                MessageBox.Show(string.Format(Message.V0DoesNotExist, textBoxTemplate.Text));
+                return;
+            }
+
+            var csv = ReadCSV();
+            if (csv == null)
+            {
+                MessageBox.Show(string.Format(Message.V0DoesNotExist, textBoxCSV.Text));
+                return;
+            }
+
+            if (csv.RowCount <= 1)
+            {
+                MessageBox.Show(Message.CSVFileIsInvalid);
+                return;
+            }
+
+            // 確認ダイアログ表示
+            var text = template;
+            var range = Enumerable.Range(1, csv.ColCount - 1);
+            foreach (var c in range)
+            {
+                text = text.Replace(string.Format("{{{0}}}", c - 1), csv.GetElement(1, c));
+            }
+            if ( FormConfirm.Open(textBoxSubject.Text, text) == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            // メール送信処理
+            total = csv.RowCount - 1;
+            count = 0;
+            var rrange = Enumerable.Range(1, csv.RowCount - 1);
+
+            Invoke((Action)(() =>
+            {
+                toolStripStatusLabel.Text = string.Format(Message.MailSending0SlashV0, total);
+                toolStripProgressBar.Maximum = total;
+                Update();
+            }));
+
+            foreach (var r in rrange)
+            {
+                var to = csv.GetElement(r, 0);
+                if (to == "")
+                {
+                    continue;
+                }
+
+                var temp = template;
+                var crange = Enumerable.Range(1, csv.ColCount - 1);
+                foreach(var c in crange)
+                {
+                    temp = temp.Replace(string.Format("{{{0}}}", c - 1), csv.GetElement(r, c));
+                }
+                SendMailAsync(
+                    MailConfig.Name, // 差出人名
+                    MailConfig.From, // 差出人アドレス
+                    to, // 送信先アドレス
+                    textBoxSubject.Text, // タイトル
+                    temp // 本文
+                    );
+            }
+        }
+
+        private string ReadTemplate()
+        {
+            if (!File.Exists(textBoxTemplate.Text))
+            {
+                return null;
+            }
+            using (var sr = new StreamReader(textBoxTemplate.Text))
+            {
+                return sr.ReadToEnd();
+            }
+        }
+
+        private CSVData ReadCSV()
+        {
+            if (!File.Exists(textBoxCSV.Text))
+            {
+                return null;
+            }
+            var cr = new CSVReader();
+            return cr.ReadCSV(textBoxCSV.Text);
+        }
+
+        private async void SendMailAsync(string name, string from, string to, string subject, string text)
+        {
+            try
+            {
+                // MimeMessageを作り、宛先やタイトルなどを設定する
+                var message = new MimeKit.MimeMessage();
+                message.From.Add(new MimeKit.MailboxAddress(name, from));
+                message.To.Add(new MimeKit.MailboxAddress("", to));
+                message.Subject = subject;
+
+                // 本文
+                var textPart = new MimeKit.TextPart(MimeKit.Text.TextFormat.Plain);
+                textPart.Text = text;
+
+                // MimeMessageを完成させる
+                message.Body = textPart;
+
+                // SMTPサーバに接続してメールを送信する
+                using (var client = new MailKit.Net.Smtp.SmtpClient())
+                {
+                    await client.ConnectAsync(MailConfig.Server, MailConfig.Port);
+                    await client.AuthenticateAsync(MailConfig.User, MailConfig.Password); // SMTPサーバがユーザー認証を必要としない場合は不要
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
+
+
+                }
+                Logger.Info(string.Format(Message.SentEmailToV0, to));
+            }
+            catch (Exception)
+            {
+                Logger.Error(string.Format(Message.FailedToSendEmailToV0, to));
+            }
+
+            lock (countLock)
+            {
+                count++;
+                Invoke((Action)(() =>
+                {
+                    if (count == total)
+                    {
+                        toolStripStatusLabel.Text = Message.Complete;
+                    }
+                    else
+                    {
+                        toolStripStatusLabel.Text = string.Format(Message.MailSendingV0SlashV1, count, total);
+                    }
+                    toolStripProgressBar.Value = count;
+                    Update();
+                }));
+            }
+        }
+
+        private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Logger.Close();
+        }
+    }
+}
