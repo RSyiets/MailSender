@@ -39,7 +39,7 @@ namespace MailSender
             Hide();
         }
 
-        private void buttonOK_Click(object sender, EventArgs e)
+        private void ButtonOK_Click(object sender, EventArgs e)
         {
             int port;
             if (!int.TryParse(textBoxPort.Text, out port))
@@ -65,6 +65,17 @@ namespace MailSender
             {
                 e.Handled = true;
             }
+        }
+
+        private void CheckBoxDomainCheck_CheckedChanged(object sender, EventArgs e) {
+            dataGridViewDomain.Enabled = checkBoxDomainCheck.Checked;
+        }
+
+        private void FormConfig_Load(object sender, EventArgs e) {
+            dataGridViewDomain.Enabled = checkBoxDomainCheck.Checked;
+            dataGridViewDomain.ColumnCount = 1;
+            dataGridViewDomain.Columns[0].HeaderText = "登録ドメイン";
+            dataGridViewDomain.Columns[0].Width = dataGridViewDomain.Width - 3;
         }
     }
 }
