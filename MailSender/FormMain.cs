@@ -90,12 +90,14 @@ namespace MailSender
 
             // 確認ダイアログ表示
             var text = template;
+            var sub = textBoxSubject.Text;
             var range = Enumerable.Range(1, csv.ColCount - 1);
             foreach (var c in range)
             {
                 text = text.Replace(string.Format("{{{0}}}", c - 1), csv.GetElement(1, c));
+                sub = sub.Replace(string.Format("{{{0}}}", c - 1), csv.GetElement(1, c));
             }
-            if ( FormConfirm.Open(textBoxSubject.Text, text) == DialogResult.Cancel)
+            if ( FormConfirm.Open(sub, text) == DialogResult.Cancel)
             {
                 return;
             }
@@ -121,16 +123,18 @@ namespace MailSender
                 }
 
                 var temp = template;
+                var subject = textBoxSubject.Text;
                 var crange = Enumerable.Range(1, csv.ColCount - 1);
                 foreach(var c in crange)
                 {
                     temp = temp.Replace(string.Format("{{{0}}}", c - 1), csv.GetElement(r, c));
+                    subject = subject.Replace(string.Format("{{{0}}}", c - 1), csv.GetElement(r, c));
                 }
                 SendMailAsync(
                     MailConfig.Name, // 差出人名
                     MailConfig.From, // 差出人アドレス
                     to, // 送信先アドレス
-                    textBoxSubject.Text, // タイトル
+                    subject, // タイトル
                     temp // 本文
                     );
             }
