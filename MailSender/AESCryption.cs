@@ -1,10 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace MailSender
-{
+namespace MailSender {
     public static class AESCryption
     {
         private const string iv = @"pf69DL6GrWFyZcMK";
