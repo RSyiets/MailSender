@@ -35,6 +35,28 @@ namespace MailSender
 
         private string password;
 
+        public class Domains {
+            private static Domains domains;
+
+            [XmlAttribute("check")]
+            public bool Check;
+
+            [XmlElement("value")]
+            public List<string> Values;
+
+            private Domains() {}
+
+            public static Domains GetInstance() {
+                if(domains == null) {
+                    domains = new Domains();
+                }
+                return domains;
+            }
+        }
+
+        [XmlElement("domains")]
+        public Domains DomainListElm;
+
         private MailConfig() { }
 
         private static MailConfig GetInstance()
@@ -42,6 +64,9 @@ namespace MailSender
             if(config == null)
             {
                 LoadConfig();
+            }
+            if(config.DomainListElm == null) {
+                config.DomainListElm = Domains.GetInstance();
             }
             return config;
         }
@@ -150,6 +175,24 @@ namespace MailSender
             set
             {
                 GetInstance().password = value;
+            }
+        }
+
+        public static bool DomainCheck {
+            get {
+                return GetInstance().DomainListElm.Check;
+            }
+            set {
+                GetInstance().DomainListElm.Check = value;
+            }
+        }
+
+        public static List<string> DomainList {
+            get {
+                return GetInstance().DomainListElm.Values;
+            }
+            set {
+                GetInstance().DomainListElm.Values = value;
             }
         }
     }

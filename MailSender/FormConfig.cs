@@ -31,7 +31,27 @@ namespace MailSender
             frm.textBoxPort.Text = MailConfig.Port.ToString();
             frm.textBoxUser.Text = MailConfig.User;
             frm.textBoxPassword.Text = MailConfig.Password;
+            frm.checkBoxDomainCheck.Checked = MailConfig.DomainCheck;
+            frm.SetDomains(MailConfig.DomainList);
             frm.ShowDialog();
+        }
+
+        private IEnumerable<string> GetDomains() {
+            foreach (DataGridViewRow row in dataGridViewDomain.Rows) {
+                var value = row.Cells[0].Value;
+                if (value == null) {
+                    continue;
+                }
+                yield return value.ToString();
+            }
+        }
+
+        private void SetDomains(List<string> domains) {
+            dataGridViewDomain.Rows.Clear();
+            dataGridViewDomain.ColumnCount = 1;
+            foreach (var domain in domains) {
+                dataGridViewDomain.Rows.Add(domain);
+            }
         }
 
         private void ButtonCancel_Click(object sender, EventArgs e)
@@ -54,6 +74,8 @@ namespace MailSender
             MailConfig.Port = port;
             MailConfig.User = textBoxUser.Text;
             MailConfig.Password = textBoxPassword.Text;
+            MailConfig.DomainCheck = checkBoxDomainCheck.Checked;
+            MailConfig.DomainList = GetDomains().ToList();
             MailConfig.Save();
 
             Hide();
