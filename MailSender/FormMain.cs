@@ -88,6 +88,11 @@ namespace MailSender
                 return;
             }
 
+            //ドメインチェック
+            if (!CheckDomains(csv)) {
+                return;
+            }
+
             // 確認ダイアログ表示
             var text = template;
             var sub = textBoxSubject.Text;
@@ -138,6 +143,40 @@ namespace MailSender
                     temp // 本文
                     );
             }
+        }
+
+        // メールアドレスからドメインのみを抽出する
+        private string ExtractDomain(string address) {
+            var s = address.Split('@');
+            return s[s.Length - 1];
+        }
+
+        private bool CheckDomains(CSVData csv) {
+            if (!MailConfig.DomainCheck) {
+                return true;
+            }
+
+            var range = Enumerable.Range(1, csv.RowCount - 1);
+            var builder = new StringBuilder(Message.UnregisteredDomainsContained);
+            var check = false;
+            foreach(var i in range) {
+                var to = csv.GetElement(i, 0);
+                var domain = ExtractDomain(to);
+                if (MailConfig.DomainList.Contains(domain)) {
+                    continue;
+                }
+                check = true;
+                builder.Append("\n");
+                builder.Append(to);
+            }
+
+            if (!check) {
+                return true;
+            }
+
+            var result = MessageBox.Show(builder.ToString(), "", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+
+            return result == DialogResult.OK;
         }
 
         private string ReadTemplate()

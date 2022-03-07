@@ -19,6 +19,7 @@ namespace MailSender
         public static readonly string PortNumberIsInvalid = "ポート番号が不正です．";
         public static readonly string SentEmailToV0 = "メールを送信しました(to {0})";
         public static readonly string SubjectIsNotInput = "タイトルが入力されていません．";
+        public static readonly string UnregisteredDomainsContained = "登録されていない以下のドメインのアドレスがCSVに含まれています．\nこのまま送信しますか？";
         public static readonly string V0DoesNotExist = "{0}が存在しません．";
 
         // ロガー用
