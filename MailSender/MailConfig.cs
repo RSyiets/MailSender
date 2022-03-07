@@ -5,26 +5,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace MailSender
 {
-    class MailConfig
+    [XmlRoot("config")]
+    public class MailConfig
     {
         private static MailConfig config;
         private static readonly string file = "config.xml";
-        private static readonly string tagRoot = "config";
-        private static readonly string tagName = "name";
-        private static readonly string tagFrom = "from";
-        private static readonly string tagServer = "server";
-        private static readonly string tagPort = "port";
-        private static readonly string tagUser = "user";
-        private static readonly string tagPassword = "password";
 
-        private string name;
-        private string from;
-        private string server;
-        private int port;
-        private string user;
+        [XmlElement("name")]
+        public string NameElm;
+
+        [XmlElement("from")]
+        public string FromElm;
+
+        [XmlElement("server")]
+        public string ServerElm;
+
+        [XmlElement("port")]
+        public int PortElm;
+
+        [XmlElement("user")]
+        public string UserElm;
+
+        [XmlElement("password")]
+        public string CryptedPassword;
+
         private string password;
 
         private MailConfig() { }
@@ -33,60 +41,38 @@ namespace MailSender
         {
             if(config == null)
             {
-                config = new MailConfig();
-                config.LoadConfig();
+                LoadConfig();
             }
             return config;
         }
 
-        public void LoadConfig()
+        public static void LoadConfig()
         {
-            if (!File.Exists(file))
-            {
+            if (!File.Exists(file)) {
+                config = new MailConfig();
+                config.PortElm = 587;
                 return;
             }
 
-            var xml = XElement.Load(file);
-            XElement? temp;
-            name = (temp = xml.Element(tagName)) == null ? "" : temp.Value;
-            from = (temp = xml.Element(tagFrom)) == null ? "" : temp.Value;
-            server = (temp = xml.Element(tagServer)) == null ? "" : temp.Value;
-            user = (temp = xml.Element(tagUser)) == null ? "" : temp.Value;
-            password = (temp = xml.Element(tagPassword)) == null ? "" : AESCryption.Decrypt(temp.Value);
-            if (!int.TryParse(xml.Element(tagPort).Value, out port))
-            {
-                port = 587;
+            var serializer = new XmlSerializer(typeof(MailConfig));
+            using (var reader = new StreamReader(file)) {
+                config = (MailConfig)serializer.Deserialize(reader);
             }
+
+            if(config.CryptedPassword == null) {
+                return;
+            }
+
+            config.password = AESCryption.Decrypt(config.CryptedPassword);
         }
 
         public void SaveConfig()
         {
-            using (var sw = new StreamWriter(file))
-            {
-                sw.Write(string.Format(
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-                    "<{0}>\n" +
-                    "  <{1}>{7}</{1}>\n" +
-                    "  <{2}>{8}</{2}>\n" +
-                    "  <{3}>{9}</{3}>\n" +
-                    "  <{4}>{10}</{4}>\n" +
-                    "  <{5}>{11}</{5}>\n" +
-                    "  <{6}>{12}</{6}>\n" +
-                    "</{0}>\n",
-                    tagRoot,
-                    tagName,
-                    tagFrom,
-                    tagServer,
-                    tagPort,
-                    tagUser,
-                    tagPassword,
-                    name,
-                    from,
-                    server,
-                    port,
-                    user,
-                    AESCryption.Encrypt(password)
-                ));
+            CryptedPassword = AESCryption.Encrypt(password);
+
+            var serializer = new XmlSerializer(GetType());
+            using (var writer = new StreamWriter(file)) {
+                serializer.Serialize(writer, this);
             }
         }
 
@@ -99,11 +85,11 @@ namespace MailSender
         {
             get
             {
-                return GetInstance().name;
+                return GetInstance().NameElm;
             }
             set
             {
-                GetInstance().name = value;
+                GetInstance().NameElm = value;
             }
         }
 
@@ -111,11 +97,11 @@ namespace MailSender
         {
             get
             {
-                return GetInstance().from;
+                return GetInstance().FromElm;
             }
             set
             {
-                GetInstance().from = value;
+                GetInstance().FromElm = value;
             }
         }
 
@@ -123,11 +109,11 @@ namespace MailSender
         {
             get
             {
-                return GetInstance().server;
+                return GetInstance().ServerElm;
             }
             set
             {
-                GetInstance().server = value;
+                GetInstance().ServerElm = value;
             }
         }
 
@@ -135,11 +121,11 @@ namespace MailSender
         {
             get
             {
-                return GetInstance().port;
+                return GetInstance().PortElm;
             }
             set
             {
-                GetInstance().port = value;
+                GetInstance().PortElm = value;
             }
         }
 
@@ -147,11 +133,11 @@ namespace MailSender
         {
             get
             {
-                return GetInstance().user;
+                return GetInstance().UserElm;
             }
             set
             {
-                GetInstance().user = value;
+                GetInstance().UserElm = value;
             }
         }
 
