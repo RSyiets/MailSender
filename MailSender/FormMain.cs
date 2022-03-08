@@ -92,8 +92,8 @@ namespace MailSender {
             var range = Enumerable.Range(1, csv.ColCount - 1);
             foreach (var c in range)
             {
-                text = text.Replace(string.Format("{{{0}}}", c - 1), csv.GetElement(1, c));
-                sub = sub.Replace(string.Format("{{{0}}}", c - 1), csv.GetElement(1, c));
+                text = text.Replace($"{{{c - 1}}}", csv.GetElement(1, c));
+                sub = sub.Replace($"{{{c - 1}}}", csv.GetElement(1, c));
             }
             if ( FormConfirm.Open(sub, text) == DialogResult.Cancel)
             {
@@ -125,8 +125,8 @@ namespace MailSender {
                 var crange = Enumerable.Range(1, csv.ColCount - 1);
                 foreach(var c in crange)
                 {
-                    temp = temp.Replace(string.Format("{{{0}}}", c - 1), csv.GetElement(r, c));
-                    subject = subject.Replace(string.Format("{{{0}}}", c - 1), csv.GetElement(r, c));
+                    temp = temp.Replace($"{{{c - 1}}}", csv.GetElement(r, c));
+                    subject = subject.Replace($"{{{c - 1}}}", csv.GetElement(r, c));
                 }
                 SendMailAsync(
                     MailConfig.Name, // 差出人名
