@@ -183,7 +183,7 @@ namespace MailSender {
 
         public static List<string> DomainList {
             get {
-                return GetInstance().DomainListElm.Values;
+                return GetInstance().DomainListElm.Values ?? new List<string>();
             }
             set {
                 GetInstance().DomainListElm.Values = value;
