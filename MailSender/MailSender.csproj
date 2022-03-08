@@ -4,6 +4,10 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+    <SignAssembly>false</SignAssembly>
+    <Authors>RSyiets</Authors>
+    <Copyright>(C) RSyiets</Copyright>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
