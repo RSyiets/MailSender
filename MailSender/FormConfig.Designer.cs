@@ -168,7 +168,7 @@ namespace MailSender
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(20, 23);
+            this.label6.Location = new System.Drawing.Point(18, 23);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(55, 15);
             this.label6.TabIndex = 100;
