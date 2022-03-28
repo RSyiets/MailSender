@@ -46,6 +46,7 @@ namespace MailSender {
             FormConfig.Open();
             textBoxName.Text = MailConfig.Name;
             textBoxFrom.Text = MailConfig.From;
+            UpdateHistory("");
         }
 
         private void ButtonSend_Click(object sender, EventArgs e)
@@ -98,7 +99,7 @@ namespace MailSender {
             SendMail(csv, template);
 
             // タイトルの履歴を更新
-            UpdateHistory();
+            UpdateHistory(comboBoxSubject.Text);
         }
 
         // メールアドレスからドメインのみを抽出する
@@ -256,8 +257,8 @@ namespace MailSender {
             }
         }
 
-        private void UpdateHistory() {
-            History.UpdateSubjects(comboBoxSubject.Text);
+        private void UpdateHistory(string subject) {
+            History.UpdateSubjects(subject);
             History.Save();
 
             comboBoxSubject.Items.Clear();

@@ -65,6 +65,14 @@ namespace MailSender {
                 return;
             }
 
+            if (count < MailConfig.MinMaxHistoryCount) {
+                count = MailConfig.MinMaxHistoryCount;
+            }
+
+            if (count > MailConfig.MaxMaxHistoryCount) {
+                count = MailConfig.MaxMaxHistoryCount;
+            }
+
             MailConfig.Name = textBoxName.Text;
             MailConfig.From = textBoxFrom.Text;
             MailConfig.Server = textBoxServer.Text;
