@@ -7,6 +7,7 @@
         public static readonly string FailedToSendEmailToV0 = "メール送信に失敗(to {0})";
         public static readonly string MailSending0SlashV0 = "メール送信中...(0/{0})";
         public static readonly string MailSendingV0SlashV1 = "メール送信中...({0}/{1})";
+        public static readonly string MaxHistoryCountIsInvalid = "タイトル履歴の最大数が不正です．";
         public static readonly string PleaseSpecifyCSVFile = "CSVファイルを指定してください．";
         public static readonly string PleaseSpecifyTemplateFile = "テンプレートファイルを指定してください．";
         public static readonly string PortNumberIsInvalid = "ポート番号が不正です．";

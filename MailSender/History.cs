@@ -7,7 +7,6 @@ namespace MailSender {
     public class History {
         private static History history;
         private static readonly string file = "history.xml";
-        private static readonly int maxCount = 10;
 
         [XmlElement("subject")]
         public List<string> SubjectsElm;
@@ -29,8 +28,8 @@ namespace MailSender {
                 Subjects.Add(subject);
             }
             
-            if (Subjects.Count > maxCount) {
-                Subjects.RemoveRange(maxCount, Subjects.Count - maxCount);
+            if (Subjects.Count > MailConfig.MaxHistoryCount) {
+                Subjects.RemoveRange(0, Subjects.Count - MailConfig.MaxHistoryCount);
             }
         }
 

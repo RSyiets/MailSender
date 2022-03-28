@@ -17,7 +17,7 @@ namespace MailSender {
         {
             InitializeComponent();
             Logger.Init(logfile);
-            comboBoxSubject.Items.AddRange(History.GetSubjects().ToArray());
+            comboBoxSubject.Items.AddRange(History.GetSubjects().Reverse().ToArray());
             textBoxName.Text = MailConfig.Name;
             textBoxFrom.Text = MailConfig.From;
             toolStripStatusLabel.Text = "";
@@ -257,9 +257,11 @@ namespace MailSender {
         }
 
         private void UpdateHistory() {
-            comboBoxSubject.Items.Add(comboBoxSubject.Text);
             History.UpdateSubjects(comboBoxSubject.Text);
             History.Save();
+
+            comboBoxSubject.Items.Clear();
+            comboBoxSubject.Items.AddRange(History.GetSubjects().Reverse().ToArray());
         }
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)

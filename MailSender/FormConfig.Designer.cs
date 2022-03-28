@@ -45,6 +45,8 @@ namespace MailSender
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.domainUpDownMaxHistoryCount = new System.Windows.Forms.DomainUpDown();
+            this.label7 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.checkBoxDomainCheck = new System.Windows.Forms.CheckBox();
             this.dataGridViewDomain = new System.Windows.Forms.DataGridView();
@@ -189,11 +191,13 @@ namespace MailSender
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(446, 276);
+            this.tabControl1.Size = new System.Drawing.Size(446, 287);
             this.tabControl1.TabIndex = 101;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.domainUpDownMaxHistoryCount);
+            this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.textBoxName);
             this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.label1);
@@ -209,10 +213,29 @@ namespace MailSender
             this.tabPage1.Location = new System.Drawing.Point(4, 24);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(438, 248);
+            this.tabPage1.Size = new System.Drawing.Size(438, 259);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "全般";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // domainUpDownMaxHistoryCount
+            // 
+            this.domainUpDownMaxHistoryCount.Items.Add("");
+            this.domainUpDownMaxHistoryCount.Location = new System.Drawing.Point(183, 218);
+            this.domainUpDownMaxHistoryCount.Name = "domainUpDownMaxHistoryCount";
+            this.domainUpDownMaxHistoryCount.Size = new System.Drawing.Size(62, 23);
+            this.domainUpDownMaxHistoryCount.TabIndex = 6;
+            this.domainUpDownMaxHistoryCount.Text = "0";
+            this.domainUpDownMaxHistoryCount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DomainUpDownMaxHistoryCount_KeyPress);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(18, 220);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(150, 15);
+            this.label7.TabIndex = 101;
+            this.label7.Text = "タイトル履歴の最大数 (0~50)";
             // 
             // tabPage2
             // 
@@ -221,7 +244,7 @@ namespace MailSender
             this.tabPage2.Location = new System.Drawing.Point(4, 24);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(438, 248);
+            this.tabPage2.Size = new System.Drawing.Size(438, 259);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "ドメイン";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -296,5 +319,7 @@ namespace MailSender
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.DataGridView dataGridViewDomain;
         private System.Windows.Forms.CheckBox checkBoxDomainCheck;
+        private System.Windows.Forms.DomainUpDown domainUpDownMaxHistoryCount;
+        private System.Windows.Forms.Label label7;
     }
 }

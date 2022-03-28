@@ -5,6 +5,10 @@ using System.Xml.Serialization;
 namespace MailSender {
     [XmlRoot("config")]
     public class MailConfig {
+        public const int MaxMaxHistoryCount = 50;
+        public const int MinMaxHistoryCount = 0;
+
+
         private static MailConfig config;
         private static readonly string file = "config.xml";
 
@@ -49,6 +53,9 @@ namespace MailSender {
 
         [XmlElement("domains")]
         public Domains DomainListElm;
+
+        [XmlElement("history")]
+        public int MaxHistoryCountElm;
 
         private MailConfig() { }
 
@@ -186,6 +193,15 @@ namespace MailSender {
             }
             set {
                 GetInstance().DomainListElm.Values = value;
+            }
+        }
+
+        public static int MaxHistoryCount {
+            get {
+                return GetInstance().MaxHistoryCountElm;
+            }
+            set {
+                GetInstance().MaxHistoryCountElm = value;
             }
         }
     }

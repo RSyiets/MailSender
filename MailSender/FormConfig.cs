@@ -4,19 +4,18 @@ using System.Linq;
 using System.Windows.Forms;
 
 namespace MailSender {
-    public partial class FormConfig : Form
-    {
+    public partial class FormConfig : Form {
         private static FormConfig frm;
 
-        private FormConfig()
-        {
+        private FormConfig() {
             InitializeComponent();
+
+            var range = Enumerable.Range(MailConfig.MinMaxHistoryCount, MailConfig.MaxMaxHistoryCount - MailConfig.MinMaxHistoryCount + 1);
+            domainUpDownMaxHistoryCount.Items.AddRange(range.Reverse().ToArray());
         }
 
-        public static void Open()
-        {
-            if (frm == null)
-            {
+        public static void Open() {
+            if (frm == null) {
                 frm = new FormConfig();
             }
             frm.textBoxName.Text = MailConfig.Name;
@@ -26,6 +25,7 @@ namespace MailSender {
             frm.textBoxUser.Text = MailConfig.User;
             frm.textBoxPassword.Text = MailConfig.Password;
             frm.checkBoxDomainCheck.Checked = MailConfig.DomainCheck;
+            frm.domainUpDownMaxHistoryCount.SelectedIndex = MailConfig.MaxMaxHistoryCount - MailConfig.MaxHistoryCount + 1;
             frm.SetDomains(MailConfig.DomainList);
             frm.ShowDialog();
         }
@@ -48,17 +48,20 @@ namespace MailSender {
             }
         }
 
-        private void ButtonCancel_Click(object sender, EventArgs e)
-        {
+        private void ButtonCancel_Click(object sender, EventArgs e) {
             Hide();
         }
 
-        private void ButtonOK_Click(object sender, EventArgs e)
-        {
+        private void ButtonOK_Click(object sender, EventArgs e) {
             int port;
-            if (!int.TryParse(textBoxPort.Text, out port))
-            {
+            if (!int.TryParse(textBoxPort.Text, out port)) {
                 MessageBox.Show(Message.PortNumberIsInvalid);
+                return;
+            }
+
+            int count;
+            if (!int.TryParse(domainUpDownMaxHistoryCount.Text, out count)) {
+                MessageBox.Show(Message.MaxHistoryCountIsInvalid);
                 return;
             }
 
@@ -70,15 +73,20 @@ namespace MailSender {
             MailConfig.Password = textBoxPassword.Text;
             MailConfig.DomainCheck = checkBoxDomainCheck.Checked;
             MailConfig.DomainList = GetDomains().ToList();
+            MailConfig.MaxHistoryCount = count;
             MailConfig.Save();
 
             Hide();
         }
 
-        private void TextBoxPort_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if(e.KeyChar != '\b' && (e.KeyChar < '0' || e.KeyChar > '9'))
-            {
+        private void TextBoxPort_KeyPress(object sender, KeyPressEventArgs e) {
+            if (e.KeyChar != '\b' && (e.KeyChar < '0' || e.KeyChar > '9')) {
+                e.Handled = true;
+            }
+        }
+
+        private void DomainUpDownMaxHistoryCount_KeyPress(object sender, KeyPressEventArgs e) {
+            if (e.KeyChar != '\b' && (e.KeyChar < '0' || e.KeyChar > '9')) {
                 e.Handled = true;
             }
         }
