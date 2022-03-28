@@ -221,15 +221,16 @@ namespace MailSender {
                 // MimeMessageを完成させる
                 message.Body = textPart;
 
-                // SMTPサーバに接続してメールを送信する
-                using (var client = new MailKit.Net.Smtp.SmtpClient())
-                {
-                    await client.ConnectAsync(MailConfig.Server, MailConfig.Port);
-                    await client.AuthenticateAsync(MailConfig.User, MailConfig.Password); // SMTPサーバがユーザー認証を必要としない場合は不要
-                    await client.SendAsync(message);
-                    await client.DisconnectAsync(true);
+                if (!Option.Dryrun) {
+                    // SMTPサーバに接続してメールを送信する
+                    using (var client = new MailKit.Net.Smtp.SmtpClient()) {
+                        await client.ConnectAsync(MailConfig.Server, MailConfig.Port);
+                        await client.AuthenticateAsync(MailConfig.User, MailConfig.Password); // SMTPサーバがユーザー認証を必要としない場合は不要
+                        await client.SendAsync(message);
+                        await client.DisconnectAsync(true);
 
 
+                    }
                 }
                 Logger.Info(string.Format(Message.SentEmailToV0, to));
             }
