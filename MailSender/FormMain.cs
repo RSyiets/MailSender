@@ -268,6 +268,52 @@ namespace MailSender {
             comboBoxSubject.Items.AddRange(History.GetSubjects().Reverse().ToArray());
         }
 
+        private void TextBox_DragEnter(object sender, DragEventArgs e) {
+            // ドラッグ中のファイルやディレクトリの取得
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            //ファイルがドラッグされている場合、
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) {
+                return;
+            }
+
+            foreach (var f in files) {
+                // ファイルパスかチェック
+                if (!File.Exists(f)) {
+                    // ファイルパス以外なので何もしない
+                    return;
+                }
+                break;
+            }
+
+            // カーソルを[+]へ変更する
+            // ここでEffectを変更しないと、以降のイベント（Drop）は発生しない
+            e.Effect = DragDropEffects.Copy;
+        }
+
+        private void TextBox_DragDrop(object sender, DragEventArgs e) {
+            //ドロップされたファイルの一覧を取得
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            if (files.Length <= 0) {
+                return;
+            }
+
+            // ドロップ先がTextBoxであるかチェック
+            var box = sender as TextBox;
+
+            if (box == null) {
+                // TextBox以外のためイベントを何もせずイベントを抜ける。
+                return;
+            }
+
+            // 現状のTextBox内のデータを削除
+            box.Text = "";
+
+            // TextBoxドラックされた文字列を設定
+            box.Text = files[0]; // 配列の先頭文字列を設定
+        }
+
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             Logger.Close();

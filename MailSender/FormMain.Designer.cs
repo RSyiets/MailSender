@@ -101,19 +101,25 @@ namespace MailSender
             // 
             // textBoxTemplate
             // 
+            this.textBoxTemplate.AllowDrop = true;
             this.textBoxTemplate.Location = new System.Drawing.Point(12, 196);
             this.textBoxTemplate.MaxLength = 1023;
             this.textBoxTemplate.Name = "textBoxTemplate";
             this.textBoxTemplate.Size = new System.Drawing.Size(302, 23);
             this.textBoxTemplate.TabIndex = 4;
+            this.textBoxTemplate.DragDrop += new System.Windows.Forms.DragEventHandler(this.TextBox_DragDrop);
+            this.textBoxTemplate.DragEnter += new System.Windows.Forms.DragEventHandler(this.TextBox_DragEnter);
             // 
             // textBoxCSV
             // 
+            this.textBoxCSV.AllowDrop = true;
             this.textBoxCSV.Location = new System.Drawing.Point(12, 250);
             this.textBoxCSV.MaxLength = 1023;
             this.textBoxCSV.Name = "textBoxCSV";
             this.textBoxCSV.Size = new System.Drawing.Size(302, 23);
             this.textBoxCSV.TabIndex = 6;
+            this.textBoxCSV.DragDrop += new System.Windows.Forms.DragEventHandler(this.TextBox_DragDrop);
+            this.textBoxCSV.DragEnter += new System.Windows.Forms.DragEventHandler(this.TextBox_DragEnter);
             // 
             // openFileDialogTemplate
             // 
