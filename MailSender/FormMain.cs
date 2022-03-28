@@ -163,8 +163,9 @@ namespace MailSender {
             var sub = subject;
             var range = Enumerable.Range(1, csv.ColCount - 1);
             foreach (var c in range) {
-                text = text.Replace($"{{{c - 1}}}", csv.GetElement(1, c));
-                sub = sub.Replace($"{{{c - 1}}}", csv.GetElement(1, c));
+                var args = csv.GetRowRange(1, 1);
+                text = string.Format(text, args.ToArray());
+                subject = string.Format(subject, args.ToArray());
             }
 
             return FormConfirm.Open(sub, text);
@@ -191,8 +192,9 @@ namespace MailSender {
                 var subject = comboBoxSubject.Text;
                 var crange = Enumerable.Range(1, csv.ColCount - 1);
                 foreach (var c in crange) {
-                    temp = temp.Replace($"{{{c - 1}}}", csv.GetElement(r, c));
-                    subject = subject.Replace($"{{{c - 1}}}", csv.GetElement(r, c));
+                    var args = csv.GetRowRange(r, 1);
+                    temp = string.Format(temp, args.ToArray());
+                    subject = string.Format(subject, args.ToArray());
                 }
                 SendMailAsync(
                     MailConfig.Name, // 差出人名

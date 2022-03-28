@@ -11,13 +11,46 @@ namespace MailSender {
             this.list = list;
         }
 
-        public List<string> GetRow(int row)
+        public IEnumerable<string> GetRow(int row)
         {
             if (list.Count <= row)
             {
-                return new List<string>();
+                yield break;
             }
-            return list.ElementAt(row);
+
+            foreach(var e in list.ElementAt(row)) {
+                yield return e;
+            }
+        }
+
+        public IEnumerable<string> GetRowRange(int row, int start, int count) {
+            if (list.Count <= row) {
+                yield break;
+            }
+
+            var l = list.ElementAt(row);
+            var range = Enumerable.Range(start, count);
+            foreach (var i in range) {
+                if(i >= l.Count) {
+                    break;
+                }
+                yield return l.ElementAt(i);
+            }
+        }
+
+        public IEnumerable<string> GetRowRange(int row, int start) {
+            if (list.Count <= row) {
+                yield break;
+            }
+
+            var l = list.ElementAt(row);
+            var range = Enumerable.Range(start, l.Count - start);
+            foreach (var i in range) {
+                if (i >= l.Count) {
+                    break;
+                }
+                yield return l.ElementAt(i);
+            }
         }
 
         public string GetElement(int row, int col)
