@@ -16,7 +16,7 @@ namespace MailSender
                 parser.SetDelimiters(",");
 
                 // フィールドが引用符で囲まれているか
-                parser.HasFieldsEnclosedInQuotes = false;
+                parser.HasFieldsEnclosedInQuotes = true;
                 // フィールドの空白トリム設定
                 parser.TrimWhiteSpace = true;
 
