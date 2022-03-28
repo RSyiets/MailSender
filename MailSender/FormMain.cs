@@ -17,6 +17,7 @@ namespace MailSender {
         {
             InitializeComponent();
             Logger.Init(logfile);
+            comboBoxSubject.Items.AddRange(History.GetSubjects().ToArray());
             textBoxName.Text = MailConfig.Name;
             textBoxFrom.Text = MailConfig.From;
             toolStripStatusLabel.Text = "";
@@ -88,7 +89,7 @@ namespace MailSender {
 
             // 確認ダイアログ表示
             var text = template;
-            var sub = textBoxSubject.Text;
+            var sub = comboBoxSubject.Text;
             var range = Enumerable.Range(1, csv.ColCount - 1);
             foreach (var c in range)
             {
@@ -121,7 +122,7 @@ namespace MailSender {
                 }
 
                 var temp = template;
-                var subject = textBoxSubject.Text;
+                var subject = comboBoxSubject.Text;
                 var crange = Enumerable.Range(1, csv.ColCount - 1);
                 foreach(var c in crange)
                 {
@@ -136,6 +137,9 @@ namespace MailSender {
                     temp // 本文
                     );
             }
+
+            // タイトルの履歴を更新
+            UpdateHistory();
         }
 
         // メールアドレスからドメインのみを抽出する
@@ -245,6 +249,12 @@ namespace MailSender {
                     Update();
                 }));
             }
+        }
+
+        private void UpdateHistory() {
+            comboBoxSubject.Items.Add(comboBoxSubject.Text);
+            History.UpdateSubjects(comboBoxSubject.Text);
+            History.Save();
         }
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)

@@ -38,7 +38,6 @@ namespace MailSender
             this.textBoxCSV = new System.Windows.Forms.TextBox();
             this.openFileDialogTemplate = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogCSV = new System.Windows.Forms.OpenFileDialog();
-            this.textBoxSubject = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.buttonConfig = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
@@ -48,6 +47,7 @@ namespace MailSender
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.comboBoxSubject = new System.Windows.Forms.ComboBox();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -122,14 +122,6 @@ namespace MailSender
             // openFileDialogCSV
             // 
             this.openFileDialogCSV.Filter = "CSVファイル|*csv|すべてのファイル|*.*";
-            // 
-            // textBoxSubject
-            // 
-            this.textBoxSubject.Location = new System.Drawing.Point(12, 142);
-            this.textBoxSubject.MaxLength = 255;
-            this.textBoxSubject.Name = "textBoxSubject";
-            this.textBoxSubject.Size = new System.Drawing.Size(302, 23);
-            this.textBoxSubject.TabIndex = 3;
             // 
             // label3
             // 
@@ -208,11 +200,20 @@ namespace MailSender
             this.toolStripStatusLabel.Size = new System.Drawing.Size(122, 17);
             this.toolStripStatusLabel.Text = "これが見えたらおかしいよ";
             // 
+            // comboBoxSubject
+            // 
+            this.comboBoxSubject.FormattingEnabled = true;
+            this.comboBoxSubject.Location = new System.Drawing.Point(12, 142);
+            this.comboBoxSubject.Name = "comboBoxSubject";
+            this.comboBoxSubject.Size = new System.Drawing.Size(302, 23);
+            this.comboBoxSubject.TabIndex = 3;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(407, 377);
+            this.Controls.Add(this.comboBoxSubject);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.textBoxFrom);
@@ -220,7 +221,6 @@ namespace MailSender
             this.Controls.Add(this.textBoxName);
             this.Controls.Add(this.buttonConfig);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBoxSubject);
             this.Controls.Add(this.textBoxCSV);
             this.Controls.Add(this.textBoxTemplate);
             this.Controls.Add(this.buttonSend);
@@ -251,7 +251,6 @@ namespace MailSender
         private System.Windows.Forms.TextBox textBoxCSV;
         private System.Windows.Forms.OpenFileDialog openFileDialogTemplate;
         private System.Windows.Forms.OpenFileDialog openFileDialogCSV;
-        private System.Windows.Forms.TextBox textBoxSubject;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button buttonConfig;
         private System.Windows.Forms.Label label4;
@@ -261,6 +260,7 @@ namespace MailSender
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+        private System.Windows.Forms.ComboBox comboBoxSubject;
     }
 }
 
