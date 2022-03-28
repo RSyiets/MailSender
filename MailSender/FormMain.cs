@@ -165,7 +165,7 @@ namespace MailSender {
             foreach (var c in range) {
                 var args = csv.GetRowRange(1, 1);
                 text = string.Format(text, args.ToArray());
-                subject = string.Format(subject, args.ToArray());
+                sub = string.Format(sub, args.ToArray());
             }
 
             return FormConfirm.Open(sub, text);
