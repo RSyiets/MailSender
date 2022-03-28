@@ -4,8 +4,7 @@ using System.Xml.Serialization;
 
 namespace MailSender {
     [XmlRoot("config")]
-    public class MailConfig
-    {
+    public class MailConfig {
         private static MailConfig config;
         private static readonly string file = "config.xml";
 
@@ -57,7 +56,7 @@ namespace MailSender {
         {
             if(config == null)
             {
-                LoadConfig();
+                Load();
             }
             if(config.DomainListElm == null) {
                 config.DomainListElm = Domains.GetInstance();
@@ -65,7 +64,7 @@ namespace MailSender {
             return config;
         }
 
-        public static void LoadConfig()
+        public static void Load()
         {
             if (!File.Exists(file)) {
                 config = new MailConfig();

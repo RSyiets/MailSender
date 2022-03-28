@@ -88,55 +88,14 @@ namespace MailSender {
             }
 
             // 確認ダイアログ表示
-            var text = template;
-            var sub = comboBoxSubject.Text;
-            var range = Enumerable.Range(1, csv.ColCount - 1);
-            foreach (var c in range)
-            {
-                text = text.Replace($"{{{c - 1}}}", csv.GetElement(1, c));
-                sub = sub.Replace($"{{{c - 1}}}", csv.GetElement(1, c));
-            }
-            if ( FormConfirm.Open(sub, text) == DialogResult.Cancel)
+            var result = OpenConfirmDialog(csv, comboBoxSubject.Text, template);
+            if ( result == DialogResult.Cancel)
             {
                 return;
             }
 
             // メール送信処理
-            total = csv.RowCount - 1;
-            count = 0;
-            var rrange = Enumerable.Range(1, csv.RowCount - 1);
-
-            Invoke((Action)(() =>
-            {
-                toolStripStatusLabel.Text = string.Format(Message.MailSending0SlashV0, total);
-                toolStripProgressBar.Maximum = total;
-                Update();
-            }));
-
-            foreach (var r in rrange)
-            {
-                var to = csv.GetElement(r, 0);
-                if (to == "")
-                {
-                    continue;
-                }
-
-                var temp = template;
-                var subject = comboBoxSubject.Text;
-                var crange = Enumerable.Range(1, csv.ColCount - 1);
-                foreach(var c in crange)
-                {
-                    temp = temp.Replace($"{{{c - 1}}}", csv.GetElement(r, c));
-                    subject = subject.Replace($"{{{c - 1}}}", csv.GetElement(r, c));
-                }
-                SendMailAsync(
-                    MailConfig.Name, // 差出人名
-                    MailConfig.From, // 差出人アドレス
-                    to, // 送信先アドレス
-                    subject, // タイトル
-                    temp // 本文
-                    );
-            }
+            SendMail(csv, template);
 
             // タイトルの履歴を更新
             UpdateHistory();
@@ -196,6 +155,52 @@ namespace MailSender {
             }
             var cr = new CSVReader();
             return cr.ReadCSV(textBoxCSV.Text);
+        }
+
+        private DialogResult OpenConfirmDialog(CSVData csv, string subject, string template) {
+            var text = template;
+            var sub = subject;
+            var range = Enumerable.Range(1, csv.ColCount - 1);
+            foreach (var c in range) {
+                text = text.Replace($"{{{c - 1}}}", csv.GetElement(1, c));
+                sub = sub.Replace($"{{{c - 1}}}", csv.GetElement(1, c));
+            }
+
+            return FormConfirm.Open(sub, text);
+        }
+
+        private void SendMail(CSVData csv, string template) {
+            total = csv.RowCount - 1;
+            count = 0;
+            var rrange = Enumerable.Range(1, csv.RowCount - 1);
+
+            Invoke((Action)(() => {
+                toolStripStatusLabel.Text = string.Format(Message.MailSending0SlashV0, total);
+                toolStripProgressBar.Maximum = total;
+                Update();
+            }));
+
+            foreach (var r in rrange) {
+                var to = csv.GetElement(r, 0);
+                if (to == "") {
+                    continue;
+                }
+
+                var temp = template;
+                var subject = comboBoxSubject.Text;
+                var crange = Enumerable.Range(1, csv.ColCount - 1);
+                foreach (var c in crange) {
+                    temp = temp.Replace($"{{{c - 1}}}", csv.GetElement(r, c));
+                    subject = subject.Replace($"{{{c - 1}}}", csv.GetElement(r, c));
+                }
+                SendMailAsync(
+                    MailConfig.Name, // 差出人名
+                    MailConfig.From, // 差出人アドレス
+                    to, // 送信先アドレス
+                    subject, // タイトル
+                    temp // 本文
+                    );
+            }
         }
 
         private async void SendMailAsync(string name, string from, string to, string subject, string text)
