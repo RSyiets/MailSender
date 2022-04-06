@@ -7,7 +7,7 @@
     <SignAssembly>false</SignAssembly>
     <Authors>RSyiets</Authors>
     <Copyright>(C) RSyiets</Copyright>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
   </PropertyGroup>
 
   <ItemGroup>
